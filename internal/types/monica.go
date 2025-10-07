@@ -224,14 +224,16 @@ var modelToBotMap = map[string]string{
 	"o3-mini":      "openai_o_3_mini",
 	"o4-mini":      "o4_mini",
 
-	"claude-4-sonnet":            "claude_4_sonnet",
-	"claude-4-sonnet-thinking":   "claude_4_sonnet_think",
-	"claude-4-opus":              "claude_4_opus",
-	"claude-4-opus-thinking":     "claude_4_opus_think",
-	"claude-3-7-sonnet-thinking": "claude_3_7_sonnet_think",
-	"claude-3-7-sonnet":          "claude_3_7_sonnet",
-	"claude-3-5-sonnet":          "claude_3.5_sonnet",
-	"claude-3-5-haiku":           "claude_3.5_haiku",
+	"claude-sonnet-4-5":                 "claude_4_5_sonnet",
+	"claude-4-sonnet":                   "claude_4_sonnet",
+	"claude-4-sonnet-thinking":          "claude_4_sonnet_think",
+	"claude-4-opus":                     "claude_4_opus",
+	"claude-4-opus-thinking":            "claude_4_opus_think",
+	"claude-opus-4-1-20250805-thinking": "claude_4_1_opus_think",
+	"claude-3-7-sonnet-thinking":        "claude_3_7_sonnet_think",
+	"claude-3-7-sonnet":                 "claude_3_7_sonnet",
+	"claude-3-5-sonnet":                 "claude_3.5_sonnet",
+	"claude-3-5-haiku":                  "claude_3.5_haiku",
 
 	"gemini-2.5-pro":   "gemini_2_5_pro",
 	"gemini-2.5-flash": "gemini_2_5_flash",
@@ -245,8 +247,9 @@ var modelToBotMap = map[string]string{
 	"sonar":               "sonar",
 	"sonar-reasoning-pro": "sonar_reasoning_pro",
 
-	"grok-3-beta": "grok_3_beta",
-	"grok-4":      "grok_4",
+	"grok-3-beta":      "grok_3_beta",
+	"grok-4":           "grok_4",
+	"grok-code-fast-1": "grok_code_fast_1",
 }
 
 func modelToBot(model string) string {
@@ -326,10 +329,12 @@ func GetSupportedModels() []string {
 		"gpt-4.1-mini",
 		"gpt-4.1-nano",
 
+		"claude-sonnet-4-5",
 		"claude-4-sonnet",
 		"claude-4-sonnet-thinking",
 		"claude-4-opus",
 		"claude-4-opus-thinking",
+		"claude-opus-4-1-20250805-thinking",
 		"claude-3-7-sonnet-thinking",
 		"claude-3-7-sonnet",
 		"claude-3-5-sonnet",
@@ -348,10 +353,13 @@ func GetSupportedModels() []string {
 		"deepseek-reasoner",
 		"deepseek-chat",
 		"deepclaude",
+
 		"sonar",
 		"sonar-reasoning-pro",
+
 		"grok-3-beta",
 		"grok-4",
+		"grok-code-fast-1",
 	}
 	return models
 }
@@ -490,7 +498,7 @@ func ChatGPTToMonica(cfg *config.Config, chatReq openai.ChatCompletionRequest) (
 			PreParentItemID: preItemID,
 			TriggerBy:       "auto",
 			IsIncognito:     true,
-			UseModel:        "", //TODO 好像写啥都没影响
+			UseModel:        chatReq.Model, //TODO 好像写啥都没影响
 			UseNewMemory:    false,
 		},
 		Language: "auto",
@@ -511,6 +519,9 @@ func ChatGPTToCustomBot(cfg *config.Config, chatReq openai.ChatCompletionRequest
 	if len(chatReq.Messages) == 0 {
 		return nil, fmt.Errorf("empty messages")
 	}
+
+	// 修改customBot请求的模型ID
+	chatReq.Model = changeModelToCustomBotModel(chatReq.Model)
 
 	// 生成会话ID
 	conversationID := fmt.Sprintf("conv:%s", uuid.New().String())
@@ -652,4 +663,15 @@ func ChatGPTToCustomBot(cfg *config.Config, chatReq openai.ChatCompletionRequest
 	}
 
 	return customBotReq, nil
+}
+
+func changeModelToCustomBotModel(model string) string {
+	switch model {
+	case "grok-4":
+		return "grok-4-0709"
+	case "gemini-2.5-pro":
+		return "gemini-2.5-pro-thinking"
+	default:
+		return model
+	}
 }
