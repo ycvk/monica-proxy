@@ -30,7 +30,12 @@ go.work.sum
 # env file
 .idea
 /build
-*_test.go
+
+# Allow specific test files
+!monica_test.go
+!*_test.go
+
 
 # windsurf rules
 .windsurfrules
+.codanna
