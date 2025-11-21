@@ -212,6 +212,7 @@ type OpenAIModelList struct {
 }
 
 var modelToBotMap = map[string]string{
+	// OpenAI 系列
 	"gpt-5":        "gpt_5",
 	"gpt-4o":       "gpt_4_o_chat",
 	"gpt-4o-mini":  "gpt_4_o_mini_chat",
@@ -223,6 +224,7 @@ var modelToBotMap = map[string]string{
 	"o3-mini":      "openai_o_3_mini",
 	"o4-mini":      "o4_mini",
 
+	// Claude 系列
 	"claude-haiku-4-5":                  "claude_4_5_haiku",
 	"claude-sonnet-4-5":                 "claude_4_5_sonnet",
 	"claude-4-sonnet":                   "claude_4_sonnet",
@@ -234,19 +236,23 @@ var modelToBotMap = map[string]string{
 	"claude-3-7-sonnet":                 "claude_3_7_sonnet",
 	"claude-3-5-haiku":                  "claude_3.5_haiku",
 
+	// Gemini 系列
 	"gemini-3-pro-preview-thinking": "gemini_3_pro_preview_think",
 	"gemini-2.5-pro":                "gemini_2_5_pro",
 	"gemini-2.5-flash":              "gemini_2_5_flash",
 	"gemini-2.0-flash":              "gemini_2_0",
 
+	// DeepSeek 系列
 	"deepseek-v3.1":     "deepseek_v3_1",
 	"deepseek-reasoner": "deepseek_reasoner",
 	"deepseek-chat":     "deepseek_chat",
 	"deepclaude":        "deepclaude",
 
+	// Perplexity 系列
 	"sonar":               "sonar",
 	"sonar-reasoning-pro": "sonar_reasoning_pro",
 
+	// Grok 系列
 	"grok-3-beta":      "grok_3_beta",
 	"grok-4":           "grok_4",
 	"grok-code-fast-1": "grok_code_fast_1",
@@ -319,47 +325,11 @@ const (
 )
 
 // GetSupportedModels 获取支持的模型列表
+// 从 modelToBotMap 自动生成，确保映射表和支持列表始终一致
 func GetSupportedModels() []string {
-	models := []string{
-		"gpt-5",
-		"gpt-4o",
-		"gpt-4o-mini",
-		"gpt-4-5",
-		"gpt-4.1",
-		"gpt-4.1-mini",
-		"gpt-4.1-nano",
-
-		"claude-sonnet-4-5",
-		"claude-4-sonnet",
-		"claude-4-sonnet-thinking",
-		"claude-4-opus",
-		"claude-4-opus-thinking",
-		"claude-opus-4-1-20250805-thinking",
-		"claude-3-7-sonnet-thinking",
-		"claude-3-7-sonnet",
-		"claude-3-5-sonnet",
-		"claude-3-5-haiku",
-
-		"gemini-2.5-pro",
-		"gemini-2.5-flash",
-		"gemini-2.0-flash",
-		"gemini-1",
-
-		"o1-preview",
-		"o3",
-		"o3-mini",
-		"o4-mini",
-
-		"deepseek-reasoner",
-		"deepseek-chat",
-		"deepclaude",
-
-		"sonar",
-		"sonar-reasoning-pro",
-
-		"grok-3-beta",
-		"grok-4",
-		"grok-code-fast-1",
+	models := make([]string, 0, len(modelToBotMap))
+	for model := range modelToBotMap {
+		models = append(models, model)
 	}
 	return models
 }
