@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1.7
 FROM golang:alpine AS deps
 WORKDIR /app
 COPY go.mod go.sum ./
@@ -8,7 +7,8 @@ FROM golang:alpine AS builder
 ARG TARGETOS=linux
 ARG TARGETARCH=amd64
 WORKDIR /app
-RUN apk add --no-cache make upx
+RUN apk add --no-cache make
+COPY --from=deps /app/go.mod /app/go.sum ./
 COPY . .
 RUN --mount=type=cache,target=/root/.cache/go-build \
     --mount=type=cache,target=/go/pkg/mod \

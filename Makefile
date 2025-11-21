@@ -11,7 +11,6 @@ build:
 	@mkdir -p $(BUILD_DIR) || true
 	@go mod tidy
 	@CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags "-s -w" -o $(BUILD_DIR)/$(BIN_NAME) .
-	@upx -7 $(BUILD_DIR)/$(BIN_NAME)
 
 build-all:
 	@$(MAKE) build GOOS=linux GOARCH=amd64
